@@ -1,9 +1,7 @@
 package com.kitcha.authentication.controller;
 
-import com.kitcha.authentication.dto.InterestDto;
 import com.kitcha.authentication.dto.LoginDto;
 import com.kitcha.authentication.dto.SignUpDto;
-import com.kitcha.authentication.service.InterestService;
 import com.kitcha.authentication.service.LoginService;
 import com.kitcha.authentication.service.SignUpService;
 import jakarta.validation.Valid;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.singletonMap;
 
@@ -25,7 +22,6 @@ import static java.util.Collections.singletonMap;
 public class UserController {
     private final LoginService loginService;
     private final SignUpService signUpService;
-    private final InterestService interestService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginMember(@Valid @RequestBody LoginDto dto) {
@@ -51,12 +47,11 @@ public class UserController {
         List<String> information = loginService.authenticate(loginDto);
         String jwtToken = information.get(0);
         String role = information.get(1);
-        String interest = information.get(2);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwtToken);
 
         return ResponseEntity.ok().headers(headers).body(
-                Map.of("message", "회원가입 성공", "role", role, "interest", interest));
+                Map.of("message", "회원가입 성공", "role", role));
     }
 
     @GetMapping("/email-check")
@@ -75,19 +70,5 @@ public class UserController {
         } else {
             return ResponseEntity.ok(singletonMap("message", "가입 가능한 닉네임 입니다."));
         }
-    }
-
-    @GetMapping("/interest")
-    public ResponseEntity<Map<String, String>> interest(@RequestHeader("X-User-Email") String email) {
-        String interest = interestService.getInterest(email);
-
-        return ResponseEntity.ok(singletonMap("interest", interest));
-    }
-
-    @PostMapping("/interest")
-    public ResponseEntity<Map<String, String>> setInterest(@RequestHeader("X-User-Email") String email, @Valid @RequestBody InterestDto dto) {
-        interestService.setInterest(email, dto);
-
-        return ResponseEntity.ok(singletonMap("message", "관심사 설정 성공"));
     }
 }

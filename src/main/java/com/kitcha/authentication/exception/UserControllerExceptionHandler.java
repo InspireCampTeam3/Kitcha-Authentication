@@ -34,18 +34,6 @@ public class UserControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(singletonMap("message", "ID 또는 PW가 일치하지 않습니다."));
     }
 
-    // MissingRequestHeaderException 처리 (setInterest)
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<Map<String, String>> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(singletonMap("message", "로그인 후 이용해주세요."));
-    }
-
-    // EmailNotFoundException 처리 (setInterest)
-    @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEmailNotFoundException(EmailNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(singletonMap("message", e.getMessage()));
-    }
-
     // 그 외 모든 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception e) {
