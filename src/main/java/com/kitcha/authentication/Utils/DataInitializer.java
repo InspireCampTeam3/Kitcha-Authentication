@@ -32,7 +32,6 @@ public class DataInitializer implements CommandLineRunner {
             user.setEmail("test@test.com");
             user.setPassword(testUserPassword);
             user.setRole("USER");
-            user.setInterest("경제");
             UserEntity admin = new UserEntity();
             admin.setNickname("admin");
             admin.setEmail("admin@kitcha.shop");

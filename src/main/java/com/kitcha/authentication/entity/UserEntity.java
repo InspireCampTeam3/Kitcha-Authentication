@@ -22,6 +22,4 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String role;
-
-    private String interest;
 }
