@@ -3,6 +3,7 @@ package com.kitcha.authentication.service;
 import com.kitcha.authentication.dto.SignUpDto;
 import com.kitcha.authentication.entity.UserEntity;
 import com.kitcha.authentication.exception.DuplicateException;
+import com.kitcha.authentication.kafka.producer.UserProducer;
 import com.kitcha.authentication.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class SignUpService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserProducer userProducer;
 
     public void signUpMember(SignUpDto dto) throws RuntimeException {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -28,7 +30,8 @@ public class SignUpService {
         BeanUtils.copyProperties(dto, userEntity);
         userEntity.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         userEntity.setRole("USER");
-        userRepository.save(userEntity);
+//        userRepository.save(userEntity);
+        userProducer.send("user", userEntity);
     }
 
     public boolean emailExists(String email) {
