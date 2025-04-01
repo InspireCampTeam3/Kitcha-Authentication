@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient("interest")
+@FeignClient(name = "INTEREST")
 public interface InterestFeignClient {
     @GetMapping("/interest")
     ResponseEntity<Map<String, String>> interest(@RequestParam("userId") String userId);
