@@ -40,6 +40,13 @@ public class UserController {
     public ResponseEntity<Map<String, String>> signUpMember(@Valid @RequestBody SignUpDto dto) {
         signUpService.signUpMember(dto);
 
+        boolean saved = signUpService.waitForUserSave(dto.getEmail(), 5000); // 5초
+
+        if (!saved) {
+            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                    .body(Map.of("message", "회원가입 처리 지연"));
+        }
+
         LoginDto loginDto = new LoginDto();
         loginDto.setEmail(dto.getEmail());
         loginDto.setPassword(dto.getPassword());

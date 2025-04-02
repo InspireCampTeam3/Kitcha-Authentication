@@ -41,4 +41,21 @@ public class SignUpService {
     public boolean nicknameExists(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
+
+    public boolean waitForUserSave(String email, long timeoutMillis) {
+        long start = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - start < timeoutMillis) {
+            if (userRepository.existsByEmail(email)) {
+                return true;
+            }
+            try {
+                Thread.sleep(200); // 0.2초 간격 polling
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+        return false;
+    }
 }
